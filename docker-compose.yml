@@ -11,7 +11,7 @@ services:
     ports:
       - '4053:4053'
     environment:
-      CLUSTER_IP: lighthouse
+      CLUSTER_IP: server
       CLUSTER_PORT: 4053
     networks:
       app_net:

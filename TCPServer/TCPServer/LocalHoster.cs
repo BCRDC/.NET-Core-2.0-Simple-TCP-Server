@@ -14,14 +14,20 @@ namespace TCPServer
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             int port = 8001;
+            String address = "127.0.0.1";
             var portStr = Environment.GetEnvironmentVariable("CLUSTER_PORT");
+            var dnsName = Environment.GetEnvironmentVariable("CLUSTER_IP");
 
             if (!string.IsNullOrEmpty(portStr))
             {
                 port = int.Parse(portStr);
             }
 
-            String address = "127.0.0.1";
+            if (!string.IsNullOrEmpty(dnsName))
+            {
+                address = dnsName;
+            }
+
 
 
             TCPNetworkLib.TCPServer server = new TCPNetworkLib.TCPServer(5, 2048);
