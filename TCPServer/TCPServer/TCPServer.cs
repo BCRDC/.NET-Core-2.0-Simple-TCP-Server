@@ -90,8 +90,8 @@ namespace TCPNetworkLib
         private void ProcessAccept(SocketAsyncEventArgs e)
         {
             Interlocked.Increment(ref _numConnectedSockets);
-            Console.WriteLine("Client connection accepted. There are {0} clients connected to the server",
-                _numConnectedSockets);
+            Console.WriteLine("Client connection accepted. There are {0} clients connected to the server, {1}, {2}",
+                _numConnectedSockets, e?.RemoteEndPoint?.Serialize().ToString(), e?.RemoteEndPoint?.ToString());
 
             // Get the socket for the accepted client connection and put it into the 
             //ReadEventArg object user token

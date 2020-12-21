@@ -9,8 +9,8 @@ namespace TestTCPClient
     {
         static void Main(string[] args)
         {
-            String address = "127.0.0.1";
-            int port = 4053;
+            String address = "139.217.177.97";
+            int port = 8001;
 
             TCPClient tcpClient = new TCPClient(2, 2048);
             tcpClient.Init();

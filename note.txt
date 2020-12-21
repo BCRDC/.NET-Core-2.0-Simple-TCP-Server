@@ -3,6 +3,6 @@ docker-compose up --remove-orphans --force-recreate --no-deps --build tcpserver
 
 
 
-docker tag tcpserver:local ccsacr.azurecr.cn/tcpserver:1221
+docker tag tcpserver:local ccsacr.azurecr.cn/tcpserver:v122106
 
-docker push ccsacr.azurecr.cn/tcpserver:1221
+docker push ccsacr.azurecr.cn/tcpserver:v122106

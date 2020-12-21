@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -11,6 +12,13 @@ namespace TCPServer
 {
     class LocalHoster: IHostedService
     {
+        private readonly ILogger<LocalHoster> logger;
+
+        public LocalHoster(ILogger<LocalHoster> logger)
+        {
+            this.logger = logger;
+        }
+
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             int port = 8001;
@@ -21,11 +29,14 @@ namespace TCPServer
             if (!string.IsNullOrEmpty(portStr))
             {
                 port = int.Parse(portStr);
+                logger.LogInformation($"Port: {port}");
             }
 
             if (!string.IsNullOrEmpty(dnsName))
             {
                 address = dnsName;
+
+                logger.LogInformation($"Dns: {address}");
             }
 
 
@@ -38,6 +49,7 @@ namespace TCPServer
             IPEndPoint endPoint = new IPEndPoint(ipAddress, port);
 
             server.Start(endPoint);
+            await Task.Delay(0);
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
