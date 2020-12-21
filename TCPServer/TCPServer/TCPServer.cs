@@ -50,8 +50,8 @@ namespace TCPNetworkLib
             StartAccept(null);
 
             //Console.WriteLine("{0} connected sockets with one outstanding receive posted to each....press any key", m_outstandingReadCount);
-            Console.WriteLine("Press any key to terminate the server process....");
-            Console.ReadKey();
+            //Console.WriteLine("Press any key to terminate the server process....");
+            //Console.Read();
         }
         
         // Begins an operation to accept a connection request from the client 

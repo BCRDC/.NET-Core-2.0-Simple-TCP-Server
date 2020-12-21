@@ -1,0 +1,121 @@
+# https://github.com/JHinW/AzureUsage/blob/master/csharp/CertAccess/docker-compose.yml
+
+version: '3.2'
+
+services:
+  lighthouse:
+    image: petabridge/lighthouse:v0.9.2
+    ports:
+      - '9110:9110'
+      - '4053:4053'
+    environment:
+      ACTORSYSTEM: "bccs"
+      CLUSTER_IP: lighthouse
+      CLUSTER_PORT: 4053
+      CLUSTER_SEEDS: "akka.tcp://bccs@lighthouse:4053"
+    networks:
+      app_net:
+          aliases:
+            - lighthouse
+  dispatcher:
+    build:
+      context: .
+      dockerfile: BlueCloud.CCS.Actor/Dockerfile-Actor
+    user: root
+    image: "dispatcher:local"
+    ports:
+      - '8081:8081'
+    environment:
+      ACTORSYSTEM: "bccs"
+      CLUSTER_IP: actor
+      CLUSTER_PORT: 8081
+      CLUSTER_SEEDS: "akka.tcp://bccs@lighthouse:4053"
+    networks:
+      app_net:
+        aliases:
+          - actor
+  smsprovider:
+    build:
+      context: .
+      dockerfile: BlueCloud.CCS.ServiceProvider/BlueCloud.CCS.ServiceProvider.SMS/Dockerfile-SmsProvider
+    user: root
+    image: "smsprovider:local"
+    command: --urls=http://*:8002
+    # command: bash -c "--urls=http://*:8002 && ntpd -gq && service ntp start"
+    ports:
+      - target: 8002
+        published: 8002
+        protocol: tcp
+      - target: 8083
+        published: 8083
+        protocol: tcp
+    networks:
+      app_net:
+        aliases:
+          - app
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ACTORSYSTEM: "bccs"
+      CLUSTER_IP: app
+      CLUSTER_PORT: 8083
+      CLUSTER_SEEDS: "akka.tcp://bccs@lighthouse:4053"
+      # Tenant_Endpoint: "tenant:8071"
+  xinlian:
+    build:
+      context: .
+      dockerfile: Connector/SMS/BC.CCS.Connector.SMS.Xinlian/Dockerfile-xinlian
+    user: root
+    image: "xinlian:local"
+    ports:
+      - target: 8072
+        published: 8072
+        protocol: tcp
+    networks:
+      app_net:
+        aliases:
+          - xinlian
+    environment:
+      ACTORSYSTEM: "bccs"
+      CLUSTER_IP: xinlian
+      CLUSTER_PORT: 8072
+      CLUSTER_SEEDS: "akka.tcp://bccs@lighthouse:4053"
+  loadtest:
+    build:
+      context: .
+      dockerfile: LoadTest/BlueCloud.CCS.LoadTest/Dockerfile-LoadTest
+    user: root
+    image: "loadtest:local"
+    ports:
+      - target: 8084
+        published: 8084
+        protocol: tcp
+    networks:
+      app_net:
+        aliases:
+          - loadtest
+    environment:
+      ACTORSYSTEM: "bccs"
+      CLUSTER_IP: loadtest
+      CLUSTER_PORT: 8084
+      CLUSTER_SEEDS: "akka.tcp://bccs@lighthouse:4053"
+  tenant:
+    build:
+      context: .
+      dockerfile: TenantManager/BC.CCS.TenantManager/Dockerfile-Tenant
+    user: root
+    image: "tenant:local"
+    ports:
+      - target: 8071
+        published: 8071
+        protocol: tcp
+    networks:
+      app_net:
+        aliases:
+          - tenant
+    environment:
+      ACTORSYSTEM: "bccs"
+      CLUSTER_IP: tenant
+      CLUSTER_PORT: 8071
+      CLUSTER_SEEDS: "akka.tcp://bccs@lighthouse:4053"
+networks:
+  app_net:

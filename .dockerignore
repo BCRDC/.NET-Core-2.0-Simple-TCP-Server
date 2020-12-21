@@ -1,0 +1,20 @@
+# https://stackoverflow.com/questions/43747776/copy-with-docker-but-with-exclusion
+
+obj
+bin
+**/bin
+**/obj
+.env
+.git
+.gitignore
+.vs
+.vscode
+docker-compose.yml
+docker-compose.*.yml
+Dockerfile
+Dockerfile.*
+
+*/bin
+*/obj
+!obj/Docker/publish/*
+!obj/Docker/empty/

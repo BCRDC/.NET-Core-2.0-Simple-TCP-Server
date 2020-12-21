@@ -1,0 +1,21 @@
+# https://github.com/JHinW/AzureUsage/blob/master/csharp/CertAccess/docker-compose.yml
+
+version: '3.2'
+
+services:
+  tcpserver:
+    build:
+      context: .
+      dockerfile: TCPServer/Dockerfile
+    image: tcpserver:local
+    ports:
+      - '4053:4053'
+    environment:
+      CLUSTER_IP: lighthouse
+      CLUSTER_PORT: 4053
+    networks:
+      app_net:
+          aliases:
+            - server
+networks:
+  app_net:
